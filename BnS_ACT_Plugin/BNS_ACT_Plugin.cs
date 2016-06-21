@@ -558,9 +558,26 @@ namespace BNS_ACT_Plugin {
             }
           }
           
-          // e.g. "Short Fuse's Bleed inflicted ..."
-          if (skill == "Bleed") {
-            actor = "Bleed";
+          // Edge cases dealing with specific skills as actor
+          // Short Fuse's Bleed
+          if (actor == "Short Fuse" && skill == "Bleed") {
+            skill = actor;
+            actor = "Debuff: Bleed [FM]";
+          }
+          
+          // Throwing Dagger's Poison / Landmine's Venom Swarm
+          if ((actor == "Throwing Dagger" || actor == "Landmine") && 
+              (skill == "Poison" || skill == "Venom Swarm")) {
+            skill = actor;
+            actor = "Debuff: Poison [Sin]";
+          }
+          
+          // Sunflower / Super Sunflower / Doom 'n' Bloom / Rosethorn / Butterfly Swarm's Ivy Poison
+          if ((actor == "Sunflower" || actor == "Super Sunflower" || actor == "Doom 'n' Bloom" || 
+               actor == "Rosethorn" || actor == "Butterfly Swarm") &&
+              (skill == "Ivy Poison")) {
+            skill = actor;
+            actor = "Debuff: Ivy Poison [Sum]";
           }
 
           if (string.IsNullOrWhiteSpace(target))
@@ -611,7 +628,7 @@ namespace BNS_ACT_Plugin {
           string target = m.Groups["target"].Success ? DecodeString(m.Groups["target"].Value) : "";
           if (string.IsNullOrWhiteSpace(target))
             target = "You";
-          string actor = "Unknown";
+          string actor = "You"; // Temporary fix [Low priority - Original value = "Unknown"]
 
           // do not process if there is no HP amount.
           if (!m.Groups["HPAmount"].Success)
