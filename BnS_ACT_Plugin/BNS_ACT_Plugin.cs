@@ -565,6 +565,12 @@ namespace BNS_ACT_Plugin {
             actor = "Debuff: Bleed [FM]";
           }
           
+          // Bombardment's Bleed
+          if (actor == "Bombardment" && skill == "Bleed") {
+            skill = actor;
+            actor = "Debuff: Bleed [WL]";
+          }
+          
           // Throwing Dagger's Poison / Landmine's Venom Swarm
           if ((actor == "Throwing Dagger" || actor == "Landmine") && 
               (skill == "Poison" || skill == "Venom Swarm")) {
