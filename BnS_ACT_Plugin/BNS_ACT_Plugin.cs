@@ -224,7 +224,7 @@ namespace BNS_ACT_Plugin {
 
     private static string _logFileName = "";
     
-    private const Int32 chatlogOffset = 0x00DD0224;
+    private const Int32 chatlogOffset = 0x00DD535C;
 
     public static void Initialize() {
       _stopThread = false;
@@ -302,7 +302,7 @@ namespace BNS_ACT_Plugin {
             // cache chatlog pointer tree
             chatlogPointer = ReadIntPtr(process.Handle, IntPtr.Add(baseAddress, chatlogOffset));
             chatlogPointer = ReadIntPtr(process.Handle, IntPtr.Add(chatlogPointer, 0x34));
-            chatlogPointer = ReadIntPtr(process.Handle, IntPtr.Add(chatlogPointer, 0x518));
+            chatlogPointer = ReadIntPtr(process.Handle, IntPtr.Add(chatlogPointer, 0x51C));
             chatlogPointer = ReadIntPtr(process.Handle, IntPtr.Add(chatlogPointer, 0x4));
 
             lastPointerUpdate = DateTime.Now;
@@ -580,7 +580,7 @@ namespace BNS_ACT_Plugin {
           
           // Sunflower / Super Sunflower / Doom 'n' Bloom / Rosethorn / Butterfly Swarm's Ivy Poison
           if ((actor == "Sunflower" || actor == "Super Sunflower" || actor == "Doom 'n' Bloom" || 
-               actor == "Rosethorn" || actor == "Butterfly Swarm") &&
+               actor == "Rosethorn" || actor == "Butterfly Swarm" || actor == "Flying Nettles") &&
               (skill == "Ivy Poison")) {
             skill = actor;
             actor = "Debuff: Ivy Poison [Sum]";
@@ -695,7 +695,7 @@ namespace BNS_ACT_Plugin {
           string target = m.Groups["target"].Success ? DecodeString(m.Groups["target"].Value) : "";
           string actor = m.Groups["actor"].Success ? DecodeString(m.Groups["actor"].Value) : "";
           if (string.IsNullOrWhiteSpace(actor))
-            actor = "Unknown";
+            actor = "You"; // Temporary fix [Low priority - Original value = "Unknown"]
 
           if (_ACT.SetEncounter(timestamp, actor, target)) {
             _ACT.AddCombatAction(
