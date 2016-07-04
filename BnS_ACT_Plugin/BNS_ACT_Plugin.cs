@@ -558,32 +558,25 @@ namespace BNS_ACT_Plugin {
             }
           }
           
-          // Edge cases dealing with specific skills as actor
-          // Short Fuse's Bleed
-          if (actor == "Short Fuse" && skill == "Bleed") {
-            skill = actor;
-            actor = "Debuff: Bleed [FM]";
-          }
+          // DOTs are artificially inflating personal DPS,
+          // this is a temporary fix.
+          if (skill == "Bleed")
+            actor = "*BLEED";
           
-          // Bombardment's Bleed
-          if (actor == "Bombardment" && skill == "Bleed") {
-            skill = actor;
-            actor = "Debuff: Bleed [WL]";
-          }
+          if (skill == "Poison")
+            actor = "*POISON";
+            
+          if (skill == "Ivy Poison")
+            actor = "*IVY POISON";
           
-          // Throwing Dagger's Poison / Landmine's Venom Swarm
-          if ((actor == "Throwing Dagger" || actor == "Landmine") && 
-              (skill == "Poison" || skill == "Venom Swarm")) {
-            skill = actor;
-            actor = "Debuff: Poison [Sin]";
-          }
-          
-          // Sunflower / Super Sunflower / Doom 'n' Bloom / Rosethorn / Butterfly Swarm's Ivy Poison
-          if ((actor == "Sunflower" || actor == "Super Sunflower" || actor == "Doom 'n' Bloom" || 
-               actor == "Rosethorn" || actor == "Butterfly Swarm" || actor == "Flying Nettles") &&
-              (skill == "Ivy Poison")) {
-            skill = actor;
-            actor = "Debuff: Ivy Poison [Sum]";
+          // Edge case - Yeti
+          if (skill == "'s Icicle Crash")
+            return;
+            
+          // Edge case - Short Fuse's
+          if (skill == "Short Fuse's") {
+            skill = "Bleed";
+            actor = "*BLEED";
           }
 
           if (string.IsNullOrWhiteSpace(target))
@@ -694,9 +687,15 @@ namespace BNS_ACT_Plugin {
         if (m.Success) {
           string target = m.Groups["target"].Success ? DecodeString(m.Groups["target"].Value) : "";
           string actor = m.Groups["actor"].Success ? DecodeString(m.Groups["actor"].Value) : "";
+          string skill = m.Groups["skill"].Success ? DecodeString(m.Groups["skill"].Value) : "";
+          
           if (string.IsNullOrWhiteSpace(actor))
             actor = "You"; // Temporary fix [Low priority - Original value = "Unknown"]
 
+          // Temporary fix, do substring work
+          if (skill == "'s Icicle Crash")
+            skill = "Icicle Crash";
+            
           if (_ACT.SetEncounter(timestamp, actor, target)) {
             _ACT.AddCombatAction(
               (int)Advanced_Combat_Tracker.SwingTypeEnum.NonMelee,
