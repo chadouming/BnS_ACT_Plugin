@@ -224,7 +224,7 @@ namespace BNS_ACT_Plugin {
 
     private static string _logFileName = "";
     
-    private const Int32 chatlogOffset = 0x00DD747C;
+    private const Int32 chatlogOffset = 0x00DD94AC;
 
     public static void Initialize() {
       _stopThread = false;
