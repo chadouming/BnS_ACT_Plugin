@@ -434,6 +434,10 @@ namespace BNS_ACT_Plugin {
     
     public static Regex regex_defeat = new Regex(@"(?<target>.+?) (was|were) (defeated|rendered near death|killed) by ((?<actor>.+?)&apos;s )?(?<skill>.+?)\.", RegexOptions.Compiled);
     
+	public static Regex regex_zone_enter = new Regex(@"(You|The party) (have|has) entered (the solo dungeon|.*)(.*)(<.*)", RegexOptions.Compiled);
+	
+	public static Regex regex_zone_leave = new Regex(@"(Abandoned progress|Completed the Dynamic Quest)", RegexOptions.Compiled);
+	
     private static IACTWrapper _ACT = null;
     
 
@@ -494,6 +498,21 @@ namespace BNS_ACT_Plugin {
         // Start Combat Log Parsed -> ACT Translation
         Match m;
 
+		// Check if we enter in a new zone.
+		m = regex_zone_enter.Match(logLine);
+		if(m.Success) {
+			string zone = m.Groups[4].Value == "" ? m.Groups[3].Value : m.Groups[4].Value;
+			Advanced_Combat_Tracker.ActGlobals.oFormActMain.ChangeZone(zone);
+			return;
+		}
+		
+		// Check if we leave the zone.
+		m = regex_zone_leave.Match(logLine);
+		if(m.Success) {
+			Advanced_Combat_Tracker.ActGlobals.oFormActMain.ChangeZone("Blade and Soul");
+			return;
+		}
+		
         // Damage dealt by the player
         m = regex_yourdamage.Match(logLine);
         if (m.Success) {
